@@ -15,8 +15,10 @@ const options = {
     if (selectedDate <= new Date()) {
       Notiflix.Notify.failure("Please choose a date in the future");
       startButton.disabled = true;
+      startButton.classList.add("disabled"); 
     } else {
       startButton.disabled = false;
+      startButton.classList.remove("disabled"); 
     }
   },
 };
@@ -34,10 +36,12 @@ flatpickr(dateTimePicker, options);
 
 const countdownTimer = (selectedDate) => {
   if (timerRunning) {
-    return; 
+    return;
   }
 
   startButton.disabled = true;
+  startButton.classList.add("disabled"); 
+  dateTimePicker.disabled = true; 
   timerRunning = true;
 
   intervalId = setInterval(() => {
@@ -47,9 +51,11 @@ const countdownTimer = (selectedDate) => {
     if (remainingTime <= 0) {
       clearInterval(intervalId);
       startButton.disabled = false;
+      startButton.classList.remove("disabled"); 
+      dateTimePicker.disabled = false; 
       updateTimerDisplay(0, 0, 0, 0);
       Notiflix.Notify.success("Countdown timer has ended");
-      timerRunning = false; 
+      timerRunning = false;
       return;
     }
 
