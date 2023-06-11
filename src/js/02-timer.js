@@ -2,6 +2,8 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from "notiflix";
 
+let timerRunning = false;
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -31,7 +33,12 @@ let intervalId;
 flatpickr(dateTimePicker, options);
 
 const countdownTimer = (selectedDate) => {
+  if (timerRunning) {
+    return; 
+  }
+
   startButton.disabled = true;
+  timerRunning = true;
 
   intervalId = setInterval(() => {
     const currentDate = new Date();
@@ -42,6 +49,7 @@ const countdownTimer = (selectedDate) => {
       startButton.disabled = false;
       updateTimerDisplay(0, 0, 0, 0);
       Notiflix.Notify.success("Countdown timer has ended");
+      timerRunning = false; 
       return;
     }
 
@@ -69,6 +77,11 @@ const updateTimerDisplay = (days, hours, minutes, seconds) => {
   hoursValue.textContent = addLeadingZero(hours);
   minutesValue.textContent = addLeadingZero(minutes);
   secondsValue.textContent = addLeadingZero(seconds);
+
+  if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
+    timerRunning = false;
+    startButton.disabled = false;
+  }
 };
 
 const addLeadingZero = (value) => {
@@ -76,6 +89,10 @@ const addLeadingZero = (value) => {
 };
 
 startButton.addEventListener("click", () => {
+  if (timerRunning) {
+    return; 
+  }
+
   const selectedDate = flatpickr.parseDate(dateTimePicker.value, "Y-m-d H:i");
 
   if (selectedDate <= new Date()) {
